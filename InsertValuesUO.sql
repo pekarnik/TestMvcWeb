@@ -8,7 +8,7 @@ SET @dat=GETDATE()
 WHILE @i < 100
 BEGIN
 INSERT INTO Users
-VALUES(CONCAT('ÔÈÎ',@i),dateadd(day,-10000+@i,@dat), RAND())
+VALUES(CONCAT('ÔÈÎ',@i),dateadd(day,-10000+@i,@dat), RAND()*100)
 SET @i=@i+1
 end
 

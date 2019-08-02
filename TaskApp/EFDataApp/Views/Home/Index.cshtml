@@ -1,8 +1,51 @@
-﻿@{
+﻿@using EFDataApp.Models
+@{
     ViewData["Title"] = "Home Page";
 }
-
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+@model IEnumerable<Order>
+<h1>Список заказов</h1>
+<table class="table">
+    <tr>
+        <th>
+            <a asp-action="Index" asp-route-sortOrder="@ViewBag.UserIdSort">
+                Идентификатор пользователя
+            </a>
+        </th>
+        <th>
+            <a asp-action="Index" asp-route-sortOrder="@ViewBag.NameSort">
+                Имя пользователя
+            </a>
+        </th>
+        <th>
+            <a asp-action="Index" asp-route-sortOrder="@ViewBag.BdateSort">
+                Дата регистрации пользователя
+            </a>
+        </th>
+        <th>
+            <a asp-action="Index" asp-route-sortOrder="@ViewBag.ScoreSort">
+                Рейтинг пользователя
+            </a>
+        </th>
+        <th>
+            <a asp-action="Index" asp-route-sortOrder="@ViewBag.DescSort">
+                Описание заказа
+            </a>
+        </th>
+        <th>
+            <a asp-action="Index" asp-route-sortOrder="@ViewBag.OdateSort">
+                Дата заказа
+            </a>
+        </th>
+        <th>
+            <a asp-action="Index" asp-route-sortOrder="@ViewBag.CountSort">
+                Количество покупок
+            </a>
+        </th>     
+    </tr>
+    @foreach (Order o in Model)
+    {
+        <tr><td>@o.UserId</td><td>@o.User.Name</td><td>@o.User.Bdate</td><td>@o.User.Score</td>
+    <td>@o.Desc</td><td>@o.Odate</td><td>@o.Cnt</td></tr>
+    }
+</table>
+  
