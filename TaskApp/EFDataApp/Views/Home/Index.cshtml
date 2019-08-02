@@ -1,51 +1,79 @@
 ﻿@using EFDataApp.Models
+@model IndexViewModel
 @{
     ViewData["Title"] = "Home Page";
 }
-@model IEnumerable<Order>
 <h1>Список заказов</h1>
+<form method="get">
+    <div class="form-inline">
+        <label class="control-label">Идентификатор пользователя: </label>
+        @Html.TextBox("User", Model.FilterViewModel.SelectedUser, htmlAttributes: new { @class = "form-control" })
+        <label class="control-label">Имя пользователя: </label>
+        @Html.TextBox("Name", Model.FilterViewModel.SelectedName, htmlAttributes: new { @class = "form-control" })
+        <label for="inputDate">Введите дату(mm.dd.yyyy):</label>
+        @Html.TextBox("RegDate",Model.FilterViewModel.RegDate, htmlAttributes: new { @class = "form-control" ,@type="data"})
+        <label class="control-label">Рейтинг пользователя</label>
+        @Html.TextBox("Score", Model.FilterViewModel.Score, htmlAttributes: new { @class = "form-control" })
+        <label class="control-label">Описание заказа: </label>
+        @Html.TextBox("Desc", Model.FilterViewModel.Desc, htmlAttributes: new { @class = "form-control" })
+        <label class="control-label">Дата заказа(mm.dd.yyyy): </label>
+        @Html.TextBox("Orderdate", Model.FilterViewModel.Orderdate, htmlAttributes: new { @class = "form-control",@type="data" })
+        <label class="control-label">Количество купленных товаров </label>
+        @Html.TextBox("Cnt", Model.FilterViewModel.Count, htmlAttributes: new { @class = "form-control" })
+
+        <input type="submit" value="Фильтр" class="btn btn-default" />
+    </div>
+</form>
 <table class="table">
     <tr>
         <th>
-            <a asp-action="Index" asp-route-sortOrder="@ViewBag.UserIdSort">
-                Идентификатор пользователя
-            </a>
+            <a asp-action="Index"
+               asp-route-sortOrder="@(Model.SortViewModel.UserIdSort)"
+               asp-route-name="@(Model.FilterViewModel.SelectedName)"
+               asp-route-user="@(Model.FilterViewModel.SelectedUser)">Идентификатор пользователя</a>
         </th>
         <th>
-            <a asp-action="Index" asp-route-sortOrder="@ViewBag.NameSort">
-                Имя пользователя
-            </a>
+            <a asp-action="Index"
+               asp-route-sortOrder="@(Model.SortViewModel.NameSort)"
+               asp-route-name="@(Model.FilterViewModel.SelectedName)"
+               asp-route-user="@(Model.FilterViewModel.SelectedUser)">Имя</a>
         </th>
         <th>
-            <a asp-action="Index" asp-route-sortOrder="@ViewBag.BdateSort">
-                Дата регистрации пользователя
-            </a>
+            <a asp-action="Index" asp-route-sortOrder="@(Model.SortViewModel.BdateSort)"
+               asp-route-name="@(Model.FilterViewModel.SelectedName)"
+               asp-route-user="@(Model.FilterViewModel.SelectedUser)">Регистрация пользователя</a>
         </th>
         <th>
-            <a asp-action="Index" asp-route-sortOrder="@ViewBag.ScoreSort">
-                Рейтинг пользователя
-            </a>
+            <a asp-action="Index" asp-route-sortOrder="@(Model.SortViewModel.ScoreSort)"
+               asp-route-name="@(Model.FilterViewModel.SelectedName)"
+               asp-route-user="@(Model.FilterViewModel.SelectedUser)">Рейтинг</a>
         </th>
         <th>
-            <a asp-action="Index" asp-route-sortOrder="@ViewBag.DescSort">
-                Описание заказа
-            </a>
+            <a asp-action="Index" asp-route-sortOrder="@(Model.SortViewModel.DescSort)"
+               asp-route-name="@(Model.FilterViewModel.SelectedName)"
+               asp-route-user="@(Model.FilterViewModel.SelectedUser)">Описание</a>
         </th>
         <th>
-            <a asp-action="Index" asp-route-sortOrder="@ViewBag.OdateSort">
-                Дата заказа
-            </a>
+            <a asp-action="Index" asp-route-sortOrder="@(Model.SortViewModel.OdateSort)"
+               asp-route-name="@(Model.FilterViewModel.SelectedName)"
+               asp-route-user="@(Model.FilterViewModel.SelectedUser)">Дата Заказа</a>
         </th>
         <th>
-            <a asp-action="Index" asp-route-sortOrder="@ViewBag.CountSort">
-                Количество покупок
-            </a>
-        </th>     
-    </tr>
-    @foreach (Order o in Model)
-    {
-        <tr><td>@o.UserId</td><td>@o.User.Name</td><td>@o.User.Bdate</td><td>@o.User.Score</td>
-    <td>@o.Desc</td><td>@o.Odate</td><td>@o.Cnt</td></tr>
+            <a asp-action="Index" asp-route-sortOrder="@(Model.SortViewModel.CountSort)"
+               asp-route-name="@(Model.FilterViewModel.SelectedName)"
+               asp-route-company="@(Model.FilterViewModel.SelectedUser)">Количество товаров</a>
+        </th>
+        @foreach (Order o in Model.Orders)
+        {
+<tr>
+            <td>@o.UserId</td>
+            <td>@o.User.Name</td>
+            <td>@o.User.Bdate</td>
+            <td>@o.User.Score</td>
+            <td>@o.Desc</td>
+            <td>@o.Odate</td>
+            <td>@o.Cnt</td>
+        </tr>
     }
-</table>
-  
+    </table>
+   

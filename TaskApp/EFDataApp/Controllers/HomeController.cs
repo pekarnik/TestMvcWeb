@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using EFDataApp.Models;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 namespace EFDataApp.Controllers
 {
@@ -16,19 +17,41 @@ namespace EFDataApp.Controllers
 		{
 			db = context;
 		}
-		public async Task<IActionResult> Index(SortState sortOrder = SortState.UserIdAsc)
+		public async Task<IActionResult> Index(int? user,string name,
+		DateTime regdate, int? score,
+			string desc, DateTime orderdate, int? cnt,int page=1,SortState sortOrder = SortState.UserIdAsc)
 		{
 			IQueryable<Order> orders = db.Orders.Include(x => x.User);
+			if(user!=null)
+			{
+				orders = orders.Where(p => p.User.Id==user);
+			}
+			if(!String.IsNullOrEmpty(name))
+			{
+				orders = orders.Where(p => p.User.Name.Contains(name));
+			}
+			if(regdate!=null&&regdate>DateTime.Now.AddYears(-100))
+			{
+				orders = orders.Where(p => p.User.Bdate.Equals(regdate));
+			}
+			if (score!=null)
+			{
+				orders = orders.Where(p => p.User.Score == score);
+			}
+			if (!String.IsNullOrEmpty(desc))
+			{
+				orders = orders.Where(p => p.Desc.Contains(desc));
+			}
+			if (orderdate != null&&orderdate > DateTime.Now.AddYears(-100))
+			{
+				orders = orders.Where(p => p.Odate.Equals(orderdate));
+			}
+			if (cnt!=null)
+			{
+				orders = orders.Where(p => p.Cnt == cnt);
+			}
 
-			ViewData["UserIdSort"] = sortOrder == SortState.UserIdAsc ? SortState.UserIdDesc : SortState.UserIdAsc;
-			ViewData["DescSort"] = sortOrder == SortState.DescriptionAsc ? SortState.DescriptionDesc : SortState.DescriptionAsc;
-			ViewData["OdateSort"] = sortOrder == SortState.OdateAsc ? SortState.OdateDesc : SortState.OdateAsc;
-			ViewData["CountSort"] = sortOrder == SortState.CntAsc ? SortState.CntDesc : SortState.CntAsc;
-			ViewData["NameSort"] = sortOrder == SortState.NameAsc ? SortState.NameDesc : SortState.NameAsc;
-			ViewData["BdateSort"] = sortOrder == SortState.BdateAsc ? SortState.BdateDesc : SortState.BdateAsc;
-			ViewData["ScoreSort"] = sortOrder == SortState.ScoreAsc ? SortState.ScoreDesc : SortState.ScoreAsc;
-
-			switch(sortOrder)
+			switch (sortOrder)
 			{
 				case SortState.UserIdDesc:
 					orders=orders.OrderByDescending(s => s.UserId);
@@ -73,7 +96,15 @@ namespace EFDataApp.Controllers
 					orders = orders.OrderBy(s => s.UserId);
 					break;
 			}
-			return View(await orders.AsNoTracking().ToListAsync());
+			var items = await orders.ToListAsync();
+
+			IndexViewModel viewModel = new IndexViewModel
+			{
+				SortViewModel = new SortViewModel(sortOrder),
+				FilterViewModel = new FilterViewModel( user, name, regdate, score, desc, orderdate, cnt),
+				Orders = items
+			};
+			return View(viewModel);
 		}
 		
 	}
